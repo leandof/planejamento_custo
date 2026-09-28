@@ -1,4 +1,8 @@
 package com.example.planejamento_custo.entity;
 
-public class StatusOrcamento {
+public enum StatusOrcamento {
+    RASCUNHO,
+    AGUARDANDO_APROVACAO,
+    APROVADO,
+    PERDIDO
 }

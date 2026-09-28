@@ -1,4 +1,7 @@
 package com.example.planejamento_custo.entity;
 
-public class TipoInsumo {
+public enum TipoInsumo {
+    MATERIAL,
+    EMBARCADO,
+    SERVICO
 }

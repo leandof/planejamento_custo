@@ -1,4 +1,4 @@
-package com.example.planejamento_custo.DTOs.;
+package com.example.planejamento_custo.dto;
 
 import lombok.Data;
 import java.math.BigDecimal;

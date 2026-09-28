@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Truckvan - Sistema de Custos</title>
+    <!-- Biblioteca para gerar PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f4f6f9; color: #333; }
+
+        /* Cabeçalho e Menu (Tabs) */
+        .header-truckvan { background-color: #b71c1c; color: white; padding: 1.2rem 0 0 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .header-content { display: flex; align-items: center; justify-content: center; gap: 15px; padding-bottom: 1rem;}
+        .logo-box { background-color: white; color: #b71c1c; font-size: 2.2rem; font-weight: 900; width: 55px; height: 55px; display: flex; align-items: center; justify-content: center; border-radius: 6px; }
+        .title-box { display: flex; flex-direction: column; }
+        .title-box h1 { font-size: 1.8rem; margin: 0; letter-spacing: 1px; font-weight: bold; }
+        .title-box p { font-size: 0.95rem; margin: 0; font-weight: 400; color: #fdfdfd; }
+
+        .nav-tabs { display: flex; justify-content: center; background-color: #8c1515; }
+        .nav-tabs button { background: none; border: none; color: white; padding: 1rem 2rem; cursor: pointer; font-size: 1rem; font-weight: 600; opacity: 0.8; transition: 0.3s;}
+        .nav-tabs button:hover { opacity: 1; background-color: #701010; }
+        .nav-tabs button.active { opacity: 1; border-bottom: 4px solid white; background-color: #701010;}
+
+        /* Estrutura das Abas */
+        .tab-content { display: none; padding: 2rem 1rem; max-width: 1200px; margin: 0 auto; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Estilos da Calculadora */
+        .dashboard-top { display: flex; gap: 1.5rem; margin-bottom: 2rem; }
+        .dash-card { flex: 1; background-color: #b71c1c; color: white; padding: 1.5rem; border-radius: 6px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .dash-card h3 { font-size: 0.9rem; font-weight: 400; margin-bottom: 0.5rem; }
+        .dash-card h2 { font-size: 2rem; font-weight: bold; }
+
+        .layout-grid { display: flex; gap: 1.5rem; align-items: flex-start; }
+        .form-column { flex: 6; }
+        .dre-column { flex: 4; position: sticky; top: 20px;}
+
+        .card { background: white; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); margin-bottom: 1.5rem; overflow: hidden; }
+        .card-accent { border-left: 4px solid #b71c1c; }
+        .card-header { font-weight: bold; padding: 1rem 1.5rem; border-bottom: 1px solid #eaeaea; color: #222; font-size: 1.05rem; display: flex; justify-content: space-between; align-items: center;}
+        .card-body { padding: 1.5rem; }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+        .full-width { grid-column: 1 / -1; }
+        .form-group { margin-bottom: 0.8rem; }
+        label { display: block; margin-bottom: 0.3rem; font-size: 0.85rem; font-weight: 600; color: #444; }
+        input[type="number"], input[type="text"], select { width: 100%; padding: 0.5rem; border: 1px solid #ced4da; border-radius: 4px; font-size: 0.95rem; }
+        .checkbox-group { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 0.5rem; }
+        .checkbox-group label { display: flex; align-items: center; gap: 0.4rem; font-weight: normal; cursor: pointer; }
+
+        /* Botões */
+        .action-buttons { display: flex; gap: 1rem; margin-top: 1rem; }
+        .btn { padding: 0.7rem 1.5rem; border: none; border-radius: 4px; font-size: 0.95rem; font-weight: bold; cursor: pointer; text-align: center; color: white; transition: 0.2s;}
+        .btn-primary { background-color: #b71c1c; }
+        .btn-primary:hover { background-color: #8c1515; }
+        .btn-secondary { background-color: #4a4a4a; }
+        .btn-secondary:hover { background-color: #333; }
+        .btn-success { background-color: #2e7d32; }
+
+        /* DRE e Tabelas */
+        .dre-item { display: flex; justify-content: space-between; padding: 0.5rem 0; font-size: 0.95rem; border-bottom: 1px dashed #eaeaea; }
+        .text-danger { color: #d32f2f; }
+        .highlight { font-weight: bold; font-size: 1.05rem; color: #222; background: #f8f9fa; padding: 0.4rem; border-radius: 4px; }
+        .highlight-profit { font-weight: bold; font-size: 1.2rem; color: #1b5e20; background: #e8f5e9; padding: 0.5rem; border-radius: 4px; }
+        hr { border: 0; border-top: 1px solid #ddd; margin: 1rem 0; }
+
+        /* Tabela de Dados (Histórico e Config) */
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        .data-table th, .data-table td { padding: 1rem; text-align: left; border-bottom: 1px solid #eee; }
+        .data-table th { background-color: #f8f9fa; color: #333; font-weight: bold; }
+        .data-table tr:hover { background-color: #fdfdfd; }
+
+        .status-msg { position: fixed; bottom: 20px; right: 20px; padding: 1rem 2rem; border-radius: 4px; display: none; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000;}
+        .msg-success { background-color: #d4edda; color: #155724; border-left: 5px solid #28a745; display: block; }
+
+        .linha-embarcado { display: grid; grid-template-columns: 2fr 1fr 1.5fr auto; gap: 0.5rem; margin-bottom: 0.5rem; align-items: end; background: #fcfcfc; padding: 10px; border: 1px solid #eee; border-radius: 4px;}
+        .btn-remove { background-color: #dc3545; color: white; border: none; padding: 0.5rem 0.8rem; border-radius: 4px; cursor: pointer; font-weight: bold;}
+    </style>
+</head>
+<body>
+<header class="header-truckvan">
+    <div class="header-content">
+        <div class="logo-box">T</div>
+        <div class="title-box">
+            <h1>TRUCKVAN</h1>
+            <p>Sistema Integrado de Engenharia e Custos</p>
+        </div>
+    </div>
+    <!-- Menu de Navegação (Tabs) -->
+    <nav class="nav-tabs">
+        <button class="active" onclick="abrirAba('aba-calculadora', this)">Calculadora</button>
+        <button onclick="abrirAba('aba-historico', this); carregarHistorico();">Histórico de Propostas</button>
+        <button onclick="abrirAba('aba-config', this); carregarConfiguracoes();">⚙️ Parâmetros (Admin)</button>
+    </nav>
+</header>
+
+<!-- ABA 1: CALCULADORA -->
+<main id="aba-calculadora" class="tab-content active">
+    <div class="dashboard-top">
+        <div class="dash-card"><h3>CUSTO TOTAL / FABRICAÇÃO</h3><h2 id="dashCusto">-</h2></div>
+        <div class="dash-card"><h3>RECEITA BRUTA (ROB)</h3><h2 id="dashVenda">-</h2></div>
+    </div>
+
+    <div class="layout-grid">
+        <div class="form-column">
+            <form id="orcamentoForm">
+                <div class="card card-accent">
+                    <div class="card-header">Configurações Iniciais</div>
+                    <div class="card-body grid-2">
+                        <div class="form-group"><label>Produto:</label><select id="tipoProduto"><option value="SEMIRREBOQUE">Semirreboque</option><option value="VUC">VUC</option><option value="MODULO_CONTEINER">Módulo Contêiner</option></select></div>
+                        <div class="form-group"><label>GGF Manual (R$):</label><input type="number" id="ggfInformado" step="0.01" value="562500.00"></div>
+                        <div class="form-group"><label>Fator Venda (Fábrica):</label><input type="number" id="fatorVenda" step="0.1" value="2.0"></div>
+                        <div class="form-group"><label>Fator Revenda (Terceiros):</label><input type="number" id="fatorRevenda" step="0.1" value="1.5"></div>
+                        <div class="form-group full-width">
+                            <label>Dimensões: Comprimento / Largura / Altura (mm):</label>
+                            <div style="display: flex; gap: 10px;">
+                                <input type="number" id="comprimento" value="15000">
+                                <input type="number" id="largura" value="2600">
+                                <input type="number" id="altura" value="2900">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card card-accent">
+                    <div class="card-header">Mão de Obra Estimada (Horas)</div>
+                    <div class="card-body grid-2">
+                        <div class="form-group"><label>Engenharia:</label><input type="number" id="hrEng" value="40"></div>
+                        <div class="form-group"><label>Caldeiraria/Solda:</label><input type="number" id="hrCaldeiraria" value="120"></div>
+                        <div class="form-group"><label>Montagem:</label><input type="number" id="hrMontagem" value="160"></div>
+                        <div class="form-group"><label>Pintura:</label><input type="number" id="hrPintura" value="30"></div>
+                    </div>
+                </div>
+
+                <div class="card card-accent">
+                    <div class="card-header">Estrutura e Acabamentos</div>
+                    <div class="card-body grid-2">
+                        <div class="form-group"><label>Qtd. Janelas Laterais:</label><input type="number" id="qtdJanelas" value="0"></div>
+                        <div class="form-group"><label>Qtd. Divisórias (m²):</label><input type="number" id="qtdDivisorias" value="0"></div>
+                        <div class="form-group"><label>Qtd. Banheiros Completos:</label><input type="number" id="qtdBanheiros" value="0"></div>
+                        <div class="form-group" id="grupoToldoBasc"><label>Toldo Basculante (mm):</label><input type="number" id="toldoBasc" value="0"></div>
+                        <div class="form-group" id="grupoToldoArtic"><label>Toldo Articulado (mm):</label><input type="number" id="toldoArtic" value="0"></div>
+                        <div class="form-group"><label>Alimentação (kVA):</label><input type="number" id="alimKva" value="0"></div>
+
+                        <div class="checkbox-group full-width">
+                            <label id="lblQuadroTraseiro"><input type="checkbox" id="quadroTraseiro"> Quadro Traseiro c/ Portas</label>
+                            <label><input type="checkbox" id="sistemaHidro"> Sistema Hidro</label>
+                            <label><input type="checkbox" id="revestAcm"> Revestimento ACM</label>
+                            <label><input type="checkbox" id="pisoAluminio"> Piso Alumínio Recalcado</label>
+                            <label><input type="checkbox" id="alimTrifasica"> Trifásica Aut.</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card card-accent">
+                    <div class="card-header">Itens Embarcados (Revenda)</div>
+                    <div class="card-body">
+                        <div id="listaEmbarcados"></div>
+                        <button type="button" class="btn btn-secondary mt-1" onclick="adicionarItemEmbarcado()">+ Adicionar Equipamento</button>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button type="button" class="btn btn-primary" onclick="salvarOrcamento()">💾 Salvar Proposta</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- DRE -->
+        <div class="dre-column">
+            <div class="card">
+                <div class="card-header">Parâmetros Fiscais (%)</div>
+                <div class="card-body grid-3">
+                    <div class="form-group"><label>ISS:</label><input type="number" id="percIss" step="0.01" value="5.00"></div>
+                    <div class="form-group"><label>PIS:</label><input type="number" id="percPis" step="0.01" value="1.65"></div>
+                    <div class="form-group"><label>COFINS:</label><input type="number" id="percCofins" step="0.01" value="7.60"></div>
+                    <div class="form-group"><label>IR:</label><input type="number" id="percIr" step="0.01" value="34.00"></div>
+                    <div class="form-group"><label>Adm:</label><input type="number" id="percDespAdm" step="0.01" value="4.00"></div>
+                    <div class="form-group"><label>Fin:</label><input type="number" id="percDespFin" step="0.01" value="1.30"></div>
+                    <div class="form-group full-width"><label>Comissão:</label><input type="number" id="percComissao" step="0.01" value="3.00"></div>
+                </div>
+            </div>
+
+            <div class="card" id="documentoPDF"> <!-- ID para o PDF -->
+                <div class="card-header">
+                    Demonstração do Resultado (DRE)
+                    <button class="btn btn-secondary" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;" onclick="gerarPDF()">📄 PDF</button>
+                </div>
+                <div class="card-body">
+                    <div class="dre-item highlight"><span>ROB:</span> <strong id="lblRob">R$ 0,00</strong></div>
+                    <div class="dre-item text-danger"><span>ISS:</span> <span id="lblIss">- R$ 0,00</span></div>
+                    <div class="dre-item text-danger"><span>PIS:</span> <span id="lblPis">- R$ 0,00</span></div>
+                    <div class="dre-item text-danger"><span>COFINS:</span> <span id="lblCofins">- R$ 0,00</span></div>
+                    <div class="dre-item highlight"><span>ROL:</span> <strong id="lblRol">R$ 0,00</strong></div>
+                    <div class="dre-item text-danger"><span>Custo Global:</span> <span id="lblCusto">- R$ 0,00</span></div>
+                    <div class="dre-item text-danger"><span>Desp. Adm:</span> <span id="lblAdm">- R$ 0,00</span></div>
+                    <div class="dre-item text-danger"><span>Desp. Financeira:</span> <span id="lblFin">- R$ 0,00</span></div>
+                    <div class="dre-item highlight"><span>LAIR:</span> <strong id="lblLair">R$ 0,00</strong></div>
+                    <div class="dre-item text-danger"><span>IR/CSLL:</span> <span id="lblIr">- R$ 0,00</span></div>
+                    <hr>
+                    <div class="dre-item highlight-profit"><span>LUCRO LÍQUIDO:</span> <strong id="lblLucro">R$ 0,00</strong></div>
+                    <div class="dre-item"><span>Margem de Lucro:</span> <strong id="lblMargem">0,00%</strong></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- ABA 2: HISTÓRICO -->
+<main id="aba-historico" class="tab-content">
+    <div class="card">
+        <div class="card-header">Propostas Salvas</div>
+        <div class="card-body">
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>ID Proposta</th>
+                    <th>Dimensões (C x L x A)</th>
+                    <th>Custo Base (R$)</th>
+                    <th>Valor de Venda ROB (R$)</th>
+                    <th>Margem (%)</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody id="tabelaHistoricoBody">
+                <!-- Preenchido via JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<!-- ABA 3: CONFIGURAÇÕES -->
+<main id="aba-config" class="tab-content">
+    <div class="card">
+        <div class="card-header">Base de Dados de Custos Paramétricos</div>
+        <div class="card-body">
+            <p style="margin-bottom: 1rem; color: #666;">Altere os valores abaixo. Eles refletirão instantaneamente em todos os novos orçamentos.</p>
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>Chave do Sistema</th>
+                    <th>Descrição</th>
+                    <th>Valor Atual (R$)</th>
+                    <th>Ação</th>
+                </tr>
+                </thead>
+                <tbody id="tabelaConfigBody">
+                <!-- Preenchido via JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<div id="statusMessage" class="status-msg"></div>
+
+<script>
+    // ==========================================
+    // NAVEGAÇÃO ENTRE ABAS (SPA)
+    // ==========================================
+    function abrirAba(abaId, elementoBotao) {
+        document.querySelectorAll('.tab-content').forEach(aba => aba.classList.remove('active'));
+        document.querySelectorAll('.nav-tabs button').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(abaId).classList.add('active');
+        elementoBotao.classList.add('active');
+    }
+
+    // Formatação Monetária
+    const formatarMoeda = (v) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
+
+    function mostrarMensagem(texto, tipo) {
+        const div = document.getElementById('statusMessage');
+        if (!texto) { div.style.display = 'none'; return; }
+        div.innerText = texto;
+        div.className = 'status-msg ' + (tipo === 'error' ? 'msg-error' : 'msg-success');
+        setTimeout(() => div.style.display = 'none', 4000);
+    }
+
+    // ==========================================
+    // GERAÇÃO DE PDF
+    // ==========================================
+    function gerarPDF() {
+        const elemento = document.getElementById('documentoPDF');
+        const opt = {
+            margin:       10,
+            filename:     'Proposta_Truckvan.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2 },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        html2pdf().set(opt).from(elemento).save();
+    }
+
+    // ==========================================
+    // FUNCIONALIDADES DA CALCULADORA
+    // ==========================================
+    let timerCalculo;
+    function acionarCalculoAutomatico() {
+        clearTimeout(timerCalculo);
+        timerCalculo = setTimeout(simularOrcamento, 400);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('#aba-calculadora input, #aba-calculadora select').forEach(input => {
+            input.addEventListener('input', acionarCalculoAutomatico);
+            input.addEventListener('change', acionarCalculoAutomatico);
+        });
+        document.getElementById('tipoProduto').addEventListener('change', ajustarCamposPorProduto);
+        simularOrcamento();
+    });
+
+    function ajustarCamposPorProduto() {
+        // Regra visual de Contêiner vs Carreta
+        const tipo = document.getElementById('tipoProduto').value;
+        if (tipo === 'MODULO_CONTEINER') {
+            document.getElementById('lblQuadroTraseiro').style.display = 'none';
+            document.getElementById('grupoToldoBasc').style.display = 'none';
+        } else {
+            document.getElementById('lblQuadroTraseiro').style.display = 'flex';
+            document.getElementById('grupoToldoBasc').style.display = 'block';
+        }
+        acionarCalculoAutomatico();
+    }
+
+    function adicionarItemEmbarcado() {
+        const div = document.createElement('div');
+        div.className = 'linha-embarcado';
+        div.innerHTML = `
+                <div><input type="text" class="emb-titulo" placeholder="Ex: Ar Condicionado" oninput="acionarCalculoAutomatico()"></div>
+                <div><input type="number" class="emb-qtd" value="1" oninput="acionarCalculoAutomatico()"></div>
+                <div><input type="number" class="emb-valor" value="0.00" oninput="acionarCalculoAutomatico()"></div>
+                <button type="button" class="btn-remove" onclick="this.parentElement.remove(); acionarCalculoAutomatico();">X</button>
+            `;
+        document.getElementById('listaEmbarcados').appendChild(div);
+    }
+
+    function montarPayload() {
+        const embarcados = Array.from(document.querySelectorAll('.linha-embarcado')).map(linha => ({
+            titulo: linha.querySelector('.emb-titulo').value,
+            quantidade: parseInt(linha.querySelector('.emb-qtd').value) || 0,
+            valorUnitario: parseFloat(linha.querySelector('.emb-valor').value) || 0
+        })).filter(i => i.titulo && i.quantidade > 0);
+
+        return {
+            tipoProduto: document.getElementById('tipoProduto').value,
+            fatorVenda: parseFloat(document.getElementById('fatorVenda').value) || 1,
+            fatorRevenda: parseFloat(document.getElementById('fatorRevenda').value) || 1,
+            comprimentoMm: parseInt(document.getElementById('comprimento').value) || 0,
+            larguraMm: parseInt(document.getElementById('largura').value) || 0,
+            alturaMm: parseInt(document.getElementById('altura').value) || 0,
+            ggfInformado: parseFloat(document.getElementById('ggfInformado').value) || 0,
+            horasEngenharia: parseInt(document.getElementById('hrEng').value) || 0,
+            horasCaldeiraria: parseInt(document.getElementById('hrCaldeiraria').value) || 0,
+            horasMontagem: parseInt(document.getElementById('hrMontagem').value) || 0,
+            horasPintura: parseInt(document.getElementById('hrPintura').value) || 0,
+            qtdJanelasLateral: parseInt(document.getElementById('qtdJanelas').value) || 0,
+            qtdDivisorias: parseInt(document.getElementById('qtdDivisorias').value) || 0,
+            qtdBanheiros: parseInt(document.getElementById('qtdBanheiros').value) || 0,
+            toldoBasculanteComprimentoMm: parseInt(document.getElementById('toldoBasc').value) || 0,
+            toldoLateralArticuladoComprimentoMm: parseInt(document.getElementById('toldoArtic').value) || 0,
+            alimentacaoKva: parseInt(document.getElementById('alimKva').value) || 0,
+            quadroTraseiroComPortas: document.getElementById('quadroTraseiro').checked,
+            sistemaHidrossanitario: document.getElementById('sistemaHidro').checked,
+            revestimentoAcm: document.getElementById('revestAcm').checked,
+            pisoAluminioRecalcado: document.getElementById('pisoAluminio').checked,
+            alimentacaoExternaTrifasica: document.getElementById('alimTrifasica').checked,
+            percIss: parseFloat(document.getElementById('percIss').value) || 0,
+            percPis: parseFloat(document.getElementById('percPis').value) || 0,
+            percCofins: parseFloat(document.getElementById('percCofins').value) || 0,
+            percIr: parseFloat(document.getElementById('percIr').value) || 0,
+            percDespAdm: parseFloat(document.getElementById('percDespAdm').value) || 0,
+            percDespFin: parseFloat(document.getElementById('percDespFin').value) || 0,
+            percComissao: parseFloat(document.getElementById('percComissao').value) || 0,
+            itensEmbarcados: embarcados
+        };
+    }
+
+    async function simularOrcamento() {
+        try {
+            const res = await fetch('http://localhost:8080/api/orcamentos/simular', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(montarPayload())
+            });
+            const dre = await res.json();
+            document.getElementById('dashCusto').innerText = formatarMoeda(dre.custoTotal);
+            document.getElementById('dashVenda').innerText = formatarMoeda(dre.receitaOperacionalBruta);
+            document.getElementById('lblRob').innerText = formatarMoeda(dre.receitaOperacionalBruta);
+            document.getElementById('lblIss').innerText = "- " + formatarMoeda(dre.iss);
+            document.getElementById('lblPis').innerText = "- " + formatarMoeda(dre.pis);
+            document.getElementById('lblCofins').innerText = "- " + formatarMoeda(dre.cofins);
+            document.getElementById('lblRol').innerText = formatarMoeda(dre.receitaOperacionalLiquida);
+            document.getElementById('lblCusto').innerText = "- " + formatarMoeda(dre.custoTotal);
+            document.getElementById('lblAdm').innerText = "- " + formatarMoeda(dre.despAdm);
+            document.getElementById('lblFin').innerText = "- " + formatarMoeda(dre.despFin);
+            document.getElementById('lblLair').innerText = formatarMoeda(dre.lair);
+            document.getElementById('lblIr').innerText = "- " + formatarMoeda(dre.ir);
+            document.getElementById('lblLucro').innerText = formatarMoeda(dre.lucroLiquido);
+            document.getElementById('lblMargem').innerText = dre.margemLucroPercentual.toFixed(2).replace('.', ',') + "%";
+            document.getElementById('lblLucro').style.color = dre.lucroLiquido < 0 ? "#2e7d32" : "#2e7d32";
+        } catch (e) {}
+    }
+
+    async function salvarOrcamento() {
+        try {
+            const res = await fetch('http://localhost:8080/api/orcamentos/salvar', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(montarPayload())
+            });
+            const salvo = await res.json();
+            mostrarMensagem(`Proposta ID #${salvo.id} gravada com sucesso!`, 'success');
+        } catch (e) { mostrarMensagem('Erro ao salvar.', 'error'); }
+    }
+
+    // ==========================================
+    // ABA HISTÓRICO
+    // ==========================================
+    async function carregarHistorico() {
+        try {
+            const res = await fetch('http://localhost:8080/api/orcamentos/listar');
+            const propostas = await res.json();
+            const tbody = document.getElementById('tabelaHistoricoBody');
+            tbody.innerHTML = '';
+            propostas.forEach(p => {
+                tbody.innerHTML += `
+                        <tr>
+                            <td><strong>#${p.id}</strong></td>
+                            <td>${p.comprimentoMm} x ${p.larguraMm} x ${p.alturaMm}</td>
+                            <td>${formatarMoeda(p.valorTotalCusto)}</td>
+                            <td><strong>${formatarMoeda(p.valorTotalVenda)}</strong></td>
+                            <td style="color: ${p.percentualLucro < 0 ? 'red' : 'green'}">${p.percentualLucro.toFixed(2)}%</td>
+                            <td><span style="background: #e9ecef; padding: 4px 8px; border-radius: 4px;">${p.status}</span></td>
+                        </tr>
+                    `;
+            });
+        } catch (e) {}
+    }
+
+    // ==========================================
+    // ABA CONFIGURAÇÕES (ADMIN)
+    // ==========================================
+    async function carregarConfiguracoes() {
+        try {
+            const res = await fetch('http://localhost:8080/api/parametros/listar');
+            const parametros = await res.json();
+            const tbody = document.getElementById('tabelaConfigBody');
+            tbody.innerHTML = '';
+            parametros.forEach(p => {
+                tbody.innerHTML += `
+                        <tr>
+                            <td><strong style="color: #b71c1c;">${p.chave}</strong></td>
+                            <td>${p.descricao}</td>
+                            <td><input type="number" id="param-${p.id}" value="${p.valor}" step="0.01" style="width: 120px;"></td>
+                            <td><button class="btn btn-success" onclick="salvarParametro(${p.id})">Guardar</button></td>
+                        </tr>
+                    `;
+            });
+        } catch (e) {}
+    }
+
+    async function salvarParametro(id) {
+        const novoValor = document.getElementById(`param-${id}`).value;
+        try {
+            await fetch('http://localhost:8080/api/parametros/atualizar', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: id, valor: novoValor })
+            });
+            mostrarMensagem('Parâmetro atualizado. Os novos orçamentos já usarão este valor.', 'success');
+            simularOrcamento(); // Refaz a conta na aba 1 com o novo preço
+        } catch (e) {}
+    }
+</script>
+</body>
+</html>
