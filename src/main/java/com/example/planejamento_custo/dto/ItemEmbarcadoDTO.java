@@ -8,5 +8,5 @@ public class ItemEmbarcadoDTO {
     private String titulo;
     private Integer quantidade;
     private BigDecimal valorUnitario;
-    private String linkFornecedor; // Opcional, para rastreabilidade de compras
+    private String linkFornecedor; // URL direta para cotação
 }

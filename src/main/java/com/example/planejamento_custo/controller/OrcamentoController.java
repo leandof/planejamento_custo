@@ -23,12 +23,12 @@ public class OrcamentoController {
 
     @PostMapping("/simular")
     public DreResponseDTO simular(@RequestBody OrcamentoRequestDTO request) {
-        return orcamentoService.simularDre(request);
+        return orcamentoService.simularOrcamento(request);
     }
 
     @PostMapping("/salvar")
     public Orcamento salvar(@RequestBody OrcamentoRequestDTO request) {
-        return orcamentoService.salvarOrcamentoDefinitivo(request);
+        return orcamentoService.salvarOrcamento(request);
     }
 
     @GetMapping("/listar")

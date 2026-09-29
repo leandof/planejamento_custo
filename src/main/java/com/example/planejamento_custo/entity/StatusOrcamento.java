@@ -1,8 +1,9 @@
 package com.example.planejamento_custo.entity;
 
 public enum StatusOrcamento {
-    RASCUNHO,
-    AGUARDANDO_APROVACAO,
+    EM_ANALISE,
+    SIMULADO,
     APROVADO,
-    PERDIDO
+    REJEITADO,
+    CANCELADO
 }
