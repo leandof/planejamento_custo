@@ -1,0 +1,20 @@
+[33me513759[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m Adiciona tela de planejamento de custos
+ .../planejamento_custo/config/GgfInitializer.java  |  50 [32m++[m
+ .../controller/GgfCaracteristicaController.java    |  23 [32m+[m
+ .../controller/OrcamentoController.java            |   4 [32m+[m[31m-[m
+ .../planejamento_custo/dto/CenarioDreDTO.java      |  25 [32m+[m
+ .../planejamento_custo/dto/DreResponseDTO.java     |  36 [32m+[m[31m-[m
+ .../planejamento_custo/dto/ItemEmbarcadoDTO.java   |   2 [32m+[m[31m-[m
+ .../dto/OrcamentoRequestDTO.java                   |  73 [32m++[m[31m-[m
+ .../entity/GgfCaracteristica.java                  |  22 [32m+[m
+ .../planejamento_custo/entity/ItemEmbarcado.java   |  28 [32m++[m
+ .../planejamento_custo/entity/Orcamento.java       |  42 [32m+[m[31m-[m
+ .../planejamento_custo/entity/StatusOrcamento.java |   9 [32m+[m[31m-[m
+ .../repository/GgfCaracteristicaRepository.java    |  13 [32m+[m
+ .../service/OrcamentoService.java                  | 223 [32m++++[m[31m-----[m
+ .../service/strategy/CalculoProdutoFactory.java    |  31 [32m++[m
+ .../service/strategy/CalculoProdutoStrategy.java   |  18 [32m+[m
+ .../strategy/SemirreboqueCalculoStrategy.java      |  42 [32m++[m
+ src/main/resources/application.properties          |   9 [32m+[m[31m-[m
+ src/main/resources/static/index.html               | 555 [32m+++++++++[m[31m------------[m
+ 18 files changed, 657 insertions(+), 548 deletions(-)
