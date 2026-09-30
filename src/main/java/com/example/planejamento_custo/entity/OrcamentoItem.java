@@ -1,33 +1,38 @@
 package com.example.planejamento_custo.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import lombok.*;
 
 import java.math.BigDecimal;
 
-@Data
 @Entity
-@Table(name = "orcamento_item")
+@Table(name = "tb_orcamento_item")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class OrcamentoItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "orcamento_id", nullable = false)
-    private Orcamento orcamento;
+    @NotNull
+    private String descricao;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "insumo_id")
-    private Insumo insumo;
-
-    @Column(nullable = false)
-    private String descricaoSnapshot;
-
-    @Column(nullable = false, precision = 10, scale = 2)
+    @NotNull @Positive
     private BigDecimal quantidade;
 
-    @Column(nullable = false, precision = 12, scale = 4)
-    private BigDecimal custoUnitarioSnapshot;
+    @NotNull @Positive
+    private BigDecimal precoUnitario;
+
+    @NotNull @Positive
+    private BigDecimal fatorAjuste;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "orcamento_id")
+    private Orcamento orcamento;
 }

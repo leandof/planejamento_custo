@@ -1,44 +1,37 @@
 package com.example.planejamento_custo.dto;
 
 import com.example.planejamento_custo.entity.TipoProduto;
-import lombok.Data;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class OrcamentoRequestDTO {
-    private String nomeCliente;
-    private String nomeProjeto;
-    private Integer diasProducao;
+
+    @NotNull
+    private String cliente;
+
+    @NotNull
     private TipoProduto tipoProduto;
 
-    private BigDecimal fatorVenda;
-    private BigDecimal fatorRevenda;
+    // Parâmetros editáveis enviados no orçamento (se nulo, usa padrão do banco)
+    private ParametroCustoDTO parametrosEditaveis;
 
-    private Integer comprimentoMm;
-    private Integer larguraMm;
-    private Integer alturaMm;
-
+    // Horas por Setor
     private Integer horasEngenharia;
     private Integer horasCaldeiraria;
     private Integer horasMontagem;
     private Integer horasPintura;
+    private Integer horasEletrica;
 
-    private BigDecimal ggfInformado;
-
-    // Percentuais em BigDecimal para permitir operações matemáticas (.divide, .multiply)
-    private BigDecimal percIss = BigDecimal.ZERO;
-    private BigDecimal percPis = BigDecimal.ZERO;
-    private BigDecimal percCofins = BigDecimal.ZERO;
-    private BigDecimal percIr = BigDecimal.ZERO;
-    private BigDecimal percDespAdm = BigDecimal.ZERO;
-    private BigDecimal percDespFin = BigDecimal.ZERO;
-    private BigDecimal percComissao = BigDecimal.ZERO;
-
-    private List<ItemEmbarcadoDTO> itensEmbarcados = new ArrayList<>();
-    private List<ItemRequestDTO> itensBase = new ArrayList<>();
-    private List<ItemEspecificoDTO> itensEspecificos = new ArrayList<>();
-    private List<Long> idsCaracteristicasGgf = new ArrayList<>();
+    @NotEmpty
+    @Valid
+    private List<ItemRequestDTO> itens;
 }

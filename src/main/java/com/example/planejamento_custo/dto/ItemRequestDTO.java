@@ -1,10 +1,28 @@
 package com.example.planejamento_custo.dto;
 
-import lombok.Data;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import lombok.*;
+
 import java.math.BigDecimal;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ItemRequestDTO {
-    private Long insumoId;
+
+    @NotNull(message = "Descrição é obrigatória")
+    private String descricao;
+
+    @NotNull(message = "Quantidade é obrigatória")
+    @Positive(message = "Quantidade deve ser maior que zero")
     private BigDecimal quantidade;
+
+    @NotNull(message = "Preço unitário é obrigatório")
+    @Positive(message = "Preço unitário deve ser maior que zero")
+    private BigDecimal precoUnitario;
+
+    private BigDecimal fatorAjuste;
 }

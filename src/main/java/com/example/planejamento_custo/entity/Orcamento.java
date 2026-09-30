@@ -1,48 +1,40 @@
 package com.example.planejamento_custo.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
+
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "orcamento")
-@Data
+@Table(name = "tb_orcamento")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder // Resolve o erro 'Cannot resolve method builder'
 public class Orcamento {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String nomeCliente;
-    private String nomeProjeto;
-    private Integer diasProducao;
+    private String cliente;
 
     @Enumerated(EnumType.STRING)
     private TipoProduto tipoProduto;
 
-    private Integer comprimentoMm;
-    private Integer larguraMm;
-    private Integer alturaMm;
-
-    private BigDecimal valorTotalCusto;
-    private BigDecimal valorTotalVenda;
-    private Double percentualLucro;
-
     @Enumerated(EnumType.STRING)
     private StatusOrcamento status;
 
-    private LocalDateTime dataCriacao;
+    @Embedded
+    private ParametroCustoSnapshot parametrosSnapshot;
 
-    @OneToMany(mappedBy = "orcamento", cascade = CascadeType.ALL)
-    private List<ItemEmbarcado> itensEmbarcados;
+    @OneToMany(mappedBy = "orcamento", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<OrcamentoItem> itens = new ArrayList<>();
 
-    @PrePersist
-    public void prePersist() {
-        this.dataCriacao = LocalDateTime.now();
-        if (this.status == null) {
-            this.status = StatusOrcamento.EM_ANALISE;
-        }
-    }
+    private BigDecimal precoVendaCalculado;
+    private BigDecimal lucroEstimado;
 }

@@ -1,28 +1,16 @@
-package com.example.planejamento_custo.entity;
+package com.example.planejamento_custo.dto;
 
-import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
 
-@Entity
-@Table(name = "tb_parametro_custo")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ParametroCusto {
+public class ParametroCustoDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, unique = true)
-    private TipoProduto tipoProduto;
-
-    // Alíquotas de Venda
     private BigDecimal aliquotaIcms;
     private BigDecimal aliquotaPis;
     private BigDecimal aliquotaCofins;
@@ -30,11 +18,9 @@ public class ParametroCusto {
     private BigDecimal percentualGgf;
     private BigDecimal percentualMargemLucro;
 
-    // Créditos Tributários sobre Compras
     private BigDecimal percentualCreditoIcmsInsumo;
     private BigDecimal percentualCreditoPisCofinsInsumo;
 
-    // Taxas Horárias Mão de Obra (R$/h) por Setor
     private BigDecimal taxaHoraEngenharia;
     private BigDecimal taxaHoraCaldeiraria;
     private BigDecimal taxaHoraMontagem;

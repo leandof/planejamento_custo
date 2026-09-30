@@ -3,388 +3,373 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Truckvan - Sistema Integrado de Custos</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #f4f6f9; color: #333; }
-        .header-truckvan { background-color: #b71c1c; color: white; padding: 1.2rem 0 0 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .header-content { display: flex; align-items: center; justify-content: center; gap: 15px; padding-bottom: 1rem;}
-        .logo-box { background-color: white; color: #b71c1c; font-size: 2.2rem; font-weight: 900; width: 55px; height: 55px; display: flex; align-items: center; justify-content: center; border-radius: 6px; }
-        .title-box h1 { font-size: 1.8rem; margin: 0; font-weight: bold; }
-        .title-box p { font-size: 0.95rem; margin: 0; color: #fdfdfd; }
-        .nav-tabs { display: flex; justify-content: center; background-color: #8c1515; }
-        .nav-tabs button { background: none; border: none; color: white; padding: 1rem 2rem; cursor: pointer; font-size: 1rem; font-weight: 600; transition: 0.3s;}
-        .nav-tabs button:hover, .nav-tabs button.active { opacity: 1; border-bottom: 4px solid white; background-color: #701010;}
-        .tab-content { display: none; padding: 2rem 1rem; max-width: 1300px; margin: 0 auto; }
-        .tab-content.active { display: block; animation: fadeIn 0.3s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .dashboard-top { display: flex; gap: 1.5rem; margin-bottom: 2rem; }
-        .dash-card { flex: 1; background-color: #b71c1c; color: white; padding: 1.5rem; border-radius: 6px; text-align: center; }
-        .layout-grid { display: flex; gap: 1.5rem; align-items: flex-start; }
-        .form-column, .dre-column { flex: 6; }
-        .card { background: white; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); margin-bottom: 1.5rem; overflow: hidden; }
-        .card-accent { border-left: 4px solid #b71c1c; }
-        .card-header { font-weight: bold; padding: 1rem 1.5rem; border-bottom: 1px solid #eaeaea; display: flex; justify-content: space-between; align-items: center;}
-        .card-body { padding: 1.5rem; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-        .grid-4 { display: grid; grid-template-columns: 2fr 2fr 1fr 2fr; gap: 1rem; }
-        .full-width { grid-column: 1 / -1; }
-        .form-group { margin-bottom: 0.8rem; }
-        label { display: block; margin-bottom: 0.3rem; font-size: 0.85rem; font-weight: 600; color: #444; }
-        input[type="number"], input[type="text"], input[type="url"], select { width: 100%; padding: 0.5rem; border: 1px solid #ced4da; border-radius: 4px; font-size: 0.95rem; }
-        .checkbox-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; }
-        .checkbox-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; padding: 6px; background: #f9f9f9; border-radius: 4px; border: 1px solid #eee; cursor: pointer;}
-        .action-buttons { display: flex; gap: 1rem; margin-top: 1rem; }
-        .btn { padding: 0.7rem 1.5rem; border: none; border-radius: 4px; font-size: 0.95rem; font-weight: bold; cursor: pointer; color: white; transition: 0.2s;}
-        .btn-primary { background-color: #b71c1c; }
-        .btn-success { background-color: #2e7d32; }
-        .btn-secondary { background-color: #4a4a4a; }
-        .linha-embarcado { display: grid; grid-template-columns: 2fr 0.5fr 1fr 2fr auto; gap: 0.5rem; margin-bottom: 0.5rem; align-items: end; padding: 10px; border: 1px solid #eee;}
-        .btn-remove { background-color: #dc3545; color: white; border: none; padding: 0.5rem; border-radius: 4px; cursor: pointer;}
-        .table-dre, .data-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-        .table-dre th, .table-dre td, .data-table th, .data-table td { padding: 0.6rem; border: 1px solid #dee2e6; text-align: right; }
-        .table-dre th:first-child, .table-dre td:first-child, .data-table th, .data-table td:first-child { text-align: left; }
-        .table-dre th, .data-table th { text-align: center; background-color: #f8f9fa;}
-        .header-max { background-color: #e8f5e9; border-bottom: 3px solid #4caf50; }
-        .header-med { background-color: #e3f2fd; border-bottom: 3px solid #2196f3; }
-        .header-min { background-color: #fff3e0; border-bottom: 3px solid #ff9800; }
-        .tr-subtotal { background-color: #f8f9fa; font-weight: bold; }
-        .tr-total { background-color: #e8f5e9; font-weight: bold; color: #1b5e20; }
-        .text-danger { color: #d32f2f; }
-        .status-msg { position: fixed; bottom: 20px; right: 20px; padding: 1rem 2rem; border-radius: 4px; display: none; font-weight: bold; z-index: 1000;}
+    <title>Truckvan | Calculadora de Custos & DRE Industrial</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-        /* Oculto, usado apenas para geração limpa do PDF */
-        #pdfContainer { display: none; padding: 20px; background: white; color: black; }
-        .pdf-title { text-align: center; color: #b71c1c; font-size: 24px; margin-bottom: 10px; font-weight: bold; }
-        .pdf-header-info { display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 14px; border-bottom: 2px solid #b71c1c; padding-bottom: 10px; }
+    <style>
+        :root {
+            --tv-red-primary: #A61C24;
+            --tv-red-dark: #7A0C12;
+            --tv-dark-neutral: #0F172A;
+            --tv-gray-100: #F8FAFC;
+            --tv-gray-200: #E2E8F0;
+            --tv-gray-600: #475569;
+            --tv-gray-800: #1E293B;
+            --tv-white: #FFFFFF;
+            --radius-md: 8px;
+            --radius-lg: 14px;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: #F1F5F9; color: var(--tv-dark-neutral); line-height: 1.5; }
+
+        /* Header Navegação */
+        header {
+            background-color: var(--tv-white);
+            position: sticky; top: 0; z-index: 1000;
+            border-bottom: 4px solid var(--tv-red-primary);
+            box-shadow: var(--shadow-sm);
+        }
+        .header-container {
+            max-width: 1320px; margin: 0 auto; padding: 12px 24px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .logo-box {
+            background-color: var(--tv-red-primary);
+            border: 2px solid var(--tv-white); outline: 2px solid var(--tv-red-primary);
+            border-radius: 6px; padding: 6px 22px; text-decoration: none;
+        }
+        .logo-text {
+            color: var(--tv-white); font-weight: 900; font-size: 22px;
+            letter-spacing: 2.5px; font-style: italic;
+        }
+
+        /* Container Principal */
+        .main-container { max-width: 1320px; margin: 24px auto 60px; padding: 0 24px; }
+        .grid-layout { display: grid; grid-template-columns: 1fr 430px; gap: 24px; }
+        @media (max-width: 1024px) { .grid-layout { grid-template-columns: 1fr; } }
+
+        /* Cards */
+        .card {
+            background-color: var(--tv-white); border-radius: var(--radius-lg);
+            border: 1px solid var(--tv-gray-200); padding: 20px; margin-bottom: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+        .card-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid var(--tv-gray-200);
+        }
+        .card-header h2 {
+            font-size: 16px; font-weight: 800; color: var(--tv-red-primary);
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        /* Form Grid */
+        .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 12px; }
+        .form-group { display: flex; flex-direction: column; gap: 4px; }
+        .form-group label { font-size: 12px; font-weight: 700; color: var(--tv-gray-800); }
+        .form-control {
+            padding: 8px 10px; border: 1px solid var(--tv-gray-200); border-radius: var(--radius-md);
+            font-size: 13px; outline: none; transition: border-color 0.2s;
+        }
+        .form-control:focus { border-color: var(--tv-red-primary); }
+
+        /* Tabela Insumos */
+        .items-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+        .items-table th {
+            background-color: #F8FAFC; color: var(--tv-gray-600); font-size: 11px;
+            font-weight: 800; text-transform: uppercase; padding: 8px; text-align: left;
+        }
+        .items-table td { padding: 6px; border-bottom: 1px solid var(--tv-gray-200); }
+
+        /* Botões */
+        .btn {
+            padding: 8px 16px; border-radius: var(--radius-md); font-size: 13px; font-weight: 700;
+            border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+        }
+        .btn-primary { background-color: var(--tv-red-primary); color: var(--tv-white); }
+        .btn-primary:hover { background-color: var(--tv-red-dark); }
+        .btn-dark { background-color: var(--tv-dark-neutral); color: var(--tv-white); }
+        .btn-danger { background-color: #FEE2E2; color: #EF4444; padding: 5px 8px; }
+
+        /* Painel DRE */
+        .dre-card {
+            background-color: var(--tv-dark-neutral); color: var(--tv-white);
+            border-radius: var(--radius-lg); padding: 22px; box-shadow: var(--shadow-lg);
+            border-top: 5px solid var(--tv-red-primary); position: sticky; top: 80px;
+        }
+        .dre-card h3 {
+            font-size: 17px; margin-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,0.15);
+            padding-bottom: 10px; display: flex; align-items: center; gap: 8px;
+        }
+        .dre-row {
+            display: flex; justify-content: space-between; padding: 7px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.07); font-size: 13px;
+        }
+        .dre-row.highlight {
+            font-size: 18px; font-weight: 900; color: #FFD700;
+            border-top: 2px solid var(--tv-red-primary); border-bottom: none;
+            margin-top: 12px; padding-top: 12px;
+        }
+        .dre-label { color: #94A3B8; }
+        .dre-value { font-weight: 700; }
+
+        /* Rodapé */
+        footer {
+            background-color: #0B0F17; color: var(--tv-white); padding: 24px;
+            border-top: 4px solid var(--tv-red-primary); margin-top: 40px;
+        }
+        .footer-container {
+            max-width: 1320px; margin: 0 auto; display: flex;
+            justify-content: space-between; align-items: center;
+        }
+        .footer-signature { font-size: 20px; font-weight: 900; color: var(--tv-red-primary); font-style: italic; }
     </style>
 </head>
 <body>
-<header class="header-truckvan">
-    <div class="header-content">
-        <div class="logo-box">T</div>
-        <div class="title-box">
-            <h1>TRUCKVAN</h1>
-            <p>Sistema Integrado de Custos</p>
+
+<header>
+    <div class="header-container">
+        <a href="#" class="logo-box"><span class="logo-text">TRUCKVAN</span></a>
+        <div style="font-weight: 700; font-size: 14px; color: var(--tv-dark-neutral);">
+            <i class="fa-solid fa-sliders"></i> Simulador de Custos & DRE Industrial
         </div>
     </div>
-    <nav class="nav-tabs">
-        <button class="active" onclick="abrirAba('aba-calculadora', this)">Calculadora Operacional</button>
-        <button onclick="abrirAba('aba-historico', this); carregarHistorico();">Histórico de Propostas</button>
-        <button onclick="abrirAba('aba-config', this); carregarParametrosLocais();"> Parâmetros & Config</button>
-    </nav>
 </header>
 
-<!-- ABA 1: CALCULADORA -->
-<main id="aba-calculadora" class="tab-content active">
-    <div class="dashboard-top">
-        <div class="dash-card"><h3>CUSTO TOTAL DE FABRICAÇÃO</h3><h2 id="dashCusto">R$ 0,00</h2></div>
-        <div class="dash-card"><h3>RECEITA BRUTA (CENÁRIO MÉDIO)</h3><h2 id="dashVenda">R$ 0,00</h2></div>
-    </div>
+<div class="main-container">
+    <div class="grid-layout">
 
-    <div class="layout-grid">
-        <div class="form-column">
-            <form id="orcamentoForm">
-                <div class="card card-accent">
-                    <div class="card-header">1. Identificação do Projeto</div>
-                    <div class="card-body grid-4">
-                        <div class="form-group"><label>Cliente:</label><input type="text" id="nomeCliente" required oninput="acionarCalculoAutomatico()"></div>
-                        <div class="form-group"><label>Projeto:</label><input type="text" id="nomeProjeto" required oninput="acionarCalculoAutomatico()"></div>
-                        <div class="form-group"><label>Lead Time:</label><input type="number" id="diasProducao" value="15" oninput="acionarCalculoAutomatico()"></div>
-                        <div class="form-group">
-                            <label>Tipo de Produto:</label>
-                            <select id="tipoProduto" onchange="carregarCaracteristicasGgf()">
-                                <option value="SEMIRREBOQUE">Semirreboque</option>
-                                <option value="SOBRECHASSI">Sobrechassi</option>
-                                <option value="VUC">VUC</option>
-                                <option value="REBOQUE">Reboque</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card card-accent">
-                    <div class="card-header">2. Engenharia (Horas-Homem)</div>
-                    <div class="card-body grid-4">
-                        <div class="form-group"><label>Engenharia:</label><input type="number" id="hrEng" value="40" oninput="acionarCalculoAutomatico()"></div>
-                        <div class="form-group"><label>Caldeiraria:</label><input type="number" id="hrCaldeiraria" value="120" oninput="acionarCalculoAutomatico()"></div>
-                        <div class="form-group"><label>Montagem:</label><input type="number" id="hrMontagem" value="160" oninput="acionarCalculoAutomatico()"></div>
-                        <div class="form-group"><label>Pintura:</label><input type="number" id="hrPintura" value="30" oninput="acionarCalculoAutomatico()"></div>
-                    </div>
-                </div>
-
-                <div class="card card-accent">
-                    <div class="card-header">3. Matriz GGF </div>
-                    <div class="card-body">
-                        <div id="containerGgf" class="checkbox-grid"></div>
-                    </div>
-                </div>
-
-                <div class="card card-accent">
-                    <div class="card-header">4. Itens Embarcados </div>
-                    <div class="card-body">
-                        <div id="listaEmbarcados"></div>
-                        <button type="button" class="btn btn-secondary mt-1" onclick="adicionarItemEmbarcado()">+ Adicionar Item</button>
-                    </div>
-                </div>
-
-                <div class="action-buttons">
-                    <button type="button" class="btn btn-success" onclick="salvarOrcamento()">💾 Salvar Proposta</button>
-                </div>
-            </form>
-        </div>
-
-        <div class="dre-column">
+        <!-- Formulário Editável -->
+        <div>
+            <!-- Identificação do Projeto -->
             <div class="card">
                 <div class="card-header">
-                    Resumo DRE (Comparativo)
-                    <button class="btn btn-primary" style="padding: 0.3rem 0.6rem;" onclick="gerarPDF()"> Exportar PDF Oficial</button>
+                    <h2><i class="fa-solid fa-file-signature"></i> Dados do Projeto</h2>
                 </div>
-                <div class="card-body" style="padding: 0;">
-                    <table class="table-dre">
-                        <thead>
-                        <tr>
-                            <th>Rubrica Financeira</th>
-                            <th class="header-max">Cenário Máximo</th>
-                            <th class="header-med">Cenário Médio</th>
-                            <th class="header-min">Cenário Mínimo</th>
-                        </tr>
-                        </thead>
-                        <tbody id="corpoTabelaDre">
-                        <!-- Preenchido via API -->
-                        </tbody>
-                    </table>
+                <div class="form-row">
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label>Cliente / Descrição</label>
+                        <input type="text" id="cliente" class="form-control" value="Senai MG - Unidade Móvel" oninput="recalcularTudo()">
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo de Produto</label>
+                        <select id="tipoProduto" class="form-control" onchange="carregarGgfPadrao(); recalcularTudo();">
+                            <option value="SEMIRREBOQUE">Semirreboque</option>
+                            <option value="SOBRECHASSI">Sobrechassi</option>
+                            <option value="VUC">VUC</option>
+                            <option value="REBOQUE">Reboque</option>
+                            <option value="MODULO_CONTEINER">Módulo Contêiner</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ⚙️️ PARÂMETROS EDITÁVEIS DE IMPOSTOS E MARGENS -->
+            <div class="card" style="border-left: 4px solid var(--tv-red-primary);">
+                <div class="card-header">
+                    <h2><i class="fa-solid fa-gears"></i> Parâmetros Tributários & Margens (Editáveis)</h2>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>ICMS Venda (%)</label><input type="number" id="pIcms" class="form-control" value="18.0" step="0.1" oninput="recalcularTudo()"></div>
+                    <div class="form-group"><label>PIS Venda (%)</label><input type="number" id="pPis" class="form-control" value="1.65" step="0.01" oninput="recalcularTudo()"></div>
+                    <div class="form-group"><label>COFINS Venda (%)</label><input type="number" id="pCofins" class="form-control" value="7.60" step="0.01" oninput="recalcularTudo()"></div>
+                    <div class="form-group"><label>Comissão (%)</label><input type="number" id="pComissao" class="form-control" value="3.0" step="0.1" oninput="recalcularTudo()"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>GGF Fabricação (%)</label><input type="number" id="pGgf" class="form-control" value="14.0" step="0.1" oninput="recalcularTudo()"></div>
+                    <div class="form-group"><label>Margem Lucro (%)</label><input type="number" id="pMargem" class="form-control" value="15.0" step="0.1" oninput="recalcularTudo()"></div>
+                    <div class="form-group"><label>Créd. ICMS Mat. (%)</label><input type="number" id="pCredIcms" class="form-control" value="12.0" step="0.1" oninput="recalcularTudo()"></div>
+                    <div class="form-group"><label>Créd. PIS/COF Mat. (%)</label><input type="number" id="pCredPisCof" class="form-control" value="9.25" step="0.01" oninput="recalcularTudo()"></div>
+                </div>
+            </div>
+
+            <!-- ⏱️ MÃO DE OBRA DIRETA (HORAS E TAXAS EDITÁVEIS POR SETOR) -->
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fa-solid fa-user-gear"></i> Mão de Obra Direta (Horas & Taxas R$/h Editáveis)</h2>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Engenharia (h)</label><input type="number" id="hEng" class="form-control" value="25" oninput="recalcularTudo()"></div>
+                    <div class="form-group"><label>Taxa Eng. (R$/h)</label><input type="number" id="tEng" class="form-control" value="65.00" step="0.5" oninput="recalcularTudo()"></div>
+                    <div class="form-group"><label>Caldeiraria (h)</label><input type="number" id="hCald" class="form-control" value="60" oninput="recalcularTudo()"></div>
+                    <div class="form-group"><label>Taxa Cald. (R$/h)</label><input type="number" id="tCald" class="form-control" value="42.00" step="0.5" oninput="recalcularTudo()"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Montagem (h)</label><input type="number" id="hMont" class="form-control" value="40" oninput="recalcularTudo()"></div>
+                    <div class="form-group"><label>Taxa Mont. (R$/h)</label><input type="number" id="tMont" class="form-control" value="38.00" step="0.5" oninput="recalcularTudo()"></div>
+                    <div class="form-group"><label>Pintura (h)</label><input type="number" id="hPint" class="form-control" value="20" oninput="recalcularTudo()"></div>
+                    <div class="form-group"><label>Taxa Pint. (R$/h)</label><input type="number" id="tPint" class="form-control" value="40.00" step="0.5" oninput="recalcularTudo()"></div>
+                </div>
+            </div>
+
+            <!-- 📦 INSUMOS E MATERIAIS -->
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fa-solid fa-boxes-stacked"></i> Composição de Materiais e Insumos</h2>
+                    <button type="button" class="btn btn-dark" onclick="adicionarInsumo()"><i class="fa-solid fa-plus"></i> Item</button>
+                </div>
+                <table class="items-table">
+                    <thead>
+                    <tr>
+                        <th>Descrição</th>
+                        <th style="width: 80px;">Qtd</th>
+                        <th style="width: 120px;">Preço Unit.</th>
+                        <th style="width: 80px;">Fator</th>
+                        <th style="width: 120px;">Subtotal</th>
+                        <th style="width: 40px;"></th>
+                    </tr>
+                    </thead>
+                    <tbody id="tabelaInsumos"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Painel DRE -->
+        <div>
+            <div class="dre-card">
+                <h3><i class="fa-solid fa-chart-line"></i> DRE do Projeto</h3>
+                <div class="dre-row"><span class="dre-label">Custo Materiais:</span><span class="dre-value" id="dreMateriais">R$ 0,00</span></div>
+                <div class="dre-row"><span class="dre-label">Custo Mão de Obra (MOD):</span><span class="dre-value" id="dreMod">R$ 0,00</span></div>
+                <div class="dre-row"><span class="dre-label">(-) Créditos Tributários:</span><span class="dre-value" style="color: #4ADE80;" id="dreCreditos">R$ 0,00</span></div>
+                <div class="dre-row"><span class="dre-label">(=) Custo Direto Líquido:</span><span class="dre-value" id="dreCustoLiquido">R$ 0,00</span></div>
+                <div class="dre-row"><span class="dre-label">(+) GGF Fabricação:</span><span class="dre-value" id="dreGgf">R$ 0,00</span></div>
+                <div class="dre-row"><span class="dre-label">(=) Custo Industrial Total:</span><span class="dre-value" id="dreCustoIndustrial">R$ 0,00</span></div>
+                <div class="dre-row"><span class="dre-label">(+) Impostos Venda:</span><span class="dre-value" id="dreImpostos">R$ 0,00</span></div>
+                <div class="dre-row"><span class="dre-label">(+) Comissão Vendas:</span><span class="dre-value" id="dreComissao">R$ 0,00</span></div>
+                <div class="dre-row"><span class="dre-label">(+) Lucro Líquido Previsto:</span><span class="dre-value" style="color: #FBBF24;" id="dreLucro">R$ 0,00</span></div>
+
+                <div class="dre-row highlight">
+                    <span>Preço de Venda Final:</span>
+                    <span id="drePrecoVenda">R$ 0,00</span>
                 </div>
             </div>
         </div>
-    </div>
-</main>
 
-<!-- ABA 2: HISTÓRICO -->
-<main id="aba-historico" class="tab-content">
-    <div class="card card-accent">
-        <div class="card-header">Base de Orçamentos Salvos</div>
-        <div class="card-body">
-            <table class="data-table">
-                <thead>
-                <tr><th>ID</th><th>Cliente</th><th>Projeto</th><th>Produto</th><th>Custo Total</th><th>Venda DRE</th><th>Ação</th></tr>
-                </thead>
-                <tbody id="tabelaHistoricoBody"></tbody>
-            </table>
-        </div>
     </div>
-</main>
-
-<!-- ABA 3: PARÂMETROS GLOBAIS -->
-<main id="aba-config" class="tab-content">
-    <div class="card card-accent">
-        <div class="card-header">Parâmetros Operacionais (Sincronizado)</div>
-        <div class="card-body grid-4">
-            <div class="form-group"><label>Markup (Máx):</label><input type="number" id="p_fator" step="0.1" value="2.0"></div>
-            <div class="form-group"><label>ISS (%):</label><input type="number" id="p_iss" step="0.01" value="5.00"></div>
-            <div class="form-group"><label>PIS (%):</label><input type="number" id="p_pis" step="0.01" value="1.65"></div>
-            <div class="form-group"><label>COFINS (%):</label><input type="number" id="p_cofins" step="0.01" value="7.60"></div>
-            <div class="form-group"><label>IR/CSLL (%):</label><input type="number" id="p_ir" step="0.01" value="34.00"></div>
-            <div class="form-group"><label>Tx. Adm (%):</label><input type="number" id="p_adm" step="0.01" value="4.00"></div>
-            <div class="form-group"><label>Tx. Fin (%):</label><input type="number" id="p_fin" step="0.01" value="1.30"></div>
-            <div class="form-group"><label>Comissão (%):</label><input type="number" id="p_comissao" step="0.01" value="3.00"></div>
-        </div>
-        <div class="card-body">
-            <button class="btn btn-primary" onclick="salvarParametros()">Atualizar Regras Globais</button>
-        </div>
-    </div>
-</main>
-
-<div id="statusMessage" class="status-msg"></div>
-
-<!-- CONTAINER INVISÍVEL PARA IMPRESSÃO EM PDF DO DRE -->
-<div id="pdfContainer">
-    <div class="pdf-title">TRUCKVAN - PROPOSTA TÉCNICA E COMERCIAL</div>
-    <div class="pdf-header-info">
-        <div><strong>Cliente:</strong> <span id="pdfCliente"></span></div>
-        <div><strong>Projeto:</strong> <span id="pdfProjeto"></span></div>
-        <div><strong>Data:</strong> <span id="pdfData"></span></div>
-    </div>
-    <table class="table-dre" id="tabelaPdfPrint">
-        <!-- Copiado dinamicamente via JS antes de gerar o PDF -->
-    </table>
 </div>
 
+<footer>
+    <div class="footer-container">
+        <div style="font-weight: 800; font-size: 14px;">TRUCKVAN - Planejamento de Custos</div>
+        <div class="footer-signature">LF</div>
+    </div>
+</footer>
+
 <script>
-    const formatarMoeda = (v) => v ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v) : "R$ 0,00";
+    const GGF_PADRAO = {
+        'SEMIRREBOQUE': 14.0,
+        'SOBRECHASSI': 12.0,
+        'VUC': 10.0,
+        'REBOQUE': 11.0,
+        'MODULO_CONTEINER': 15.0
+    };
 
-    function abrirAba(id, btn) {
-        document.querySelectorAll('.tab-content').forEach(e => e.classList.remove('active'));
-        document.querySelectorAll('.nav-tabs button').forEach(e => e.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        btn.classList.add('active');
-    }
+    document.addEventListener("DOMContentLoaded", () => {
+        adicionarInsumo("Chassi de Aço NBR 7007", 1, 18500, 1.0);
+        adicionarInsumo("Conjunto Eixo e Suspensão", 2, 9200, 1.0);
+        adicionarInsumo("Sistema Elétrico & LED", 1, 3400, 1.0);
+        recalcularTudo();
+    });
 
-    function showMsg(txt, isError=false) {
-        const div = document.getElementById('statusMessage');
-        div.innerText = txt;
-        div.style.backgroundColor = isError ? '#f8d7da' : '#d4edda';
-        div.style.color = isError ? '#721c24' : '#155724';
-        div.style.borderLeft = isError ? '5px solid #dc3545' : '5px solid #28a745';
-        div.style.display = 'block';
-        setTimeout(() => div.style.display = 'none', 3000);
-    }
-
-    // Parâmetros (Armazenamento Local)
-    function salvarParametros() {
-        const params = {
-            fator: document.getElementById('p_fator').value, iss: document.getElementById('p_iss').value,
-            pis: document.getElementById('p_pis').value, cofins: document.getElementById('p_cofins').value,
-            ir: document.getElementById('p_ir').value, adm: document.getElementById('p_adm').value,
-            fin: document.getElementById('p_fin').value, comissao: document.getElementById('p_comissao').value
-        };
-        localStorage.setItem('truckvan_params', JSON.stringify(params));
-        showMsg('Parâmetros salvos e aplicados!');
-        acionarCalculoAutomatico();
-    }
-
-    function carregarParametrosLocais() {
-        const params = JSON.parse(localStorage.getItem('truckvan_params'));
-        if(params) {
-            document.getElementById('p_fator').value = params.fator; document.getElementById('p_iss').value = params.iss;
-            document.getElementById('p_pis').value = params.pis; document.getElementById('p_cofins').value = params.cofins;
-            document.getElementById('p_ir').value = params.ir; document.getElementById('p_adm').value = params.adm;
-            document.getElementById('p_fin').value = params.fin; document.getElementById('p_comissao').value = params.comissao;
+    function carregarGgfPadrao() {
+        const tipo = document.getElementById("tipoProduto").value;
+        if (GGF_PADRAO[tipo]) {
+            document.getElementById("pGgf").value = GGF_PADRAO[tipo];
         }
     }
 
-    // GGF
-    async function carregarCaracteristicasGgf() {
-        const tipo = document.getElementById("tipoProduto").value;
-        try {
-            const res = await fetch(`/api/ggf-caracteristicas?tipoProduto=${tipo}`);
-            if(!res.ok) throw new Error();
-            const lista = await res.json();
-            let html = "";
-            lista.forEach(c => {
-                html += `<label class="checkbox-item"><input type="checkbox" class="chk-ggf" value="${c.id}" onchange="acionarCalculoAutomatico()"> ${c.nomeCaracteristica} (+${c.pontuacaoPadrao})</label>`;
-            });
-            document.getElementById("containerGgf").innerHTML = html || "<p>Sem características.</p>";
-        } catch (e) { document.getElementById("containerGgf").innerHTML = "<p>Erro ao ler base de dados GGF.</p>"; }
-        acionarCalculoAutomatico();
-    }
+    function adicionarInsumo(desc = "", qtd = 1, preco = 0, fator = 1.0) {
+        const tbody = document.getElementById("tabelaInsumos");
+        const tr = document.createElement("tr");
 
-    function adicionarItemEmbarcado() {
-        const div = document.createElement('div');
-        div.className = 'linha-embarcado';
-        div.innerHTML = `
-                <div><input type="text" class="emb-titulo" placeholder="Descrição Item" oninput="acionarCalculoAutomatico()"></div>
-                <div><input type="number" class="emb-qtd" value="1" oninput="acionarCalculoAutomatico()"></div>
-                <div><input type="number" class="emb-valor" placeholder="Valor Unitário" oninput="acionarCalculoAutomatico()"></div>
-                <div><input type="url" class="emb-link" placeholder="URL Fornecedor"></div>
-                <button type="button" class="btn-remove" onclick="this.parentElement.remove(); acionarCalculoAutomatico();">X</button>
+        tr.innerHTML = `
+                <td><input type="text" class="form-control item-desc" value="${desc}" oninput="recalcularTudo()"></td>
+                <td><input type="number" class="form-control item-qtd" value="${qtd}" min="0.01" step="0.01" oninput="recalcularTudo()"></td>
+                <td><input type="number" class="form-control item-preco" value="${preco}" min="0" step="0.01" oninput="recalcularTudo()"></td>
+                <td><input type="number" class="form-control item-fator" value="${fator}" min="0.1" step="0.1" oninput="recalcularTudo()"></td>
+                <td class="item-subtotal" style="font-weight: 700; font-size: 12px;">R$ 0,00</td>
+                <td><button type="button" class="btn btn-danger" onclick="this.closest('tr').remove(); recalcularTudo();"><i class="fa-solid fa-trash"></i></button></td>
             `;
-        document.getElementById('listaEmbarcados').appendChild(div);
+
+        tbody.appendChild(tr);
+        recalcularTudo();
     }
 
-    let timer;
-    function acionarCalculoAutomatico() {
-        clearTimeout(timer);
-        timer = setTimeout(simularOrcamento, 500);
-    }
+    function recalcularTudo() {
+        // Read Editable Parameters
+        const pIcms = (parseFloat(document.getElementById("pIcms").value) || 0) / 100;
+        const pPis = (parseFloat(document.getElementById("pPis").value) || 0) / 100;
+        const pCofins = (parseFloat(document.getElementById("pCofins").value) || 0) / 100;
+        const pComissao = (parseFloat(document.getElementById("pComissao").value) || 0) / 100;
+        const pGgf = (parseFloat(document.getElementById("pGgf").value) || 0) / 100;
+        const pMargem = (parseFloat(document.getElementById("pMargem").value) || 0) / 100;
+        const pCredIcms = (parseFloat(document.getElementById("pCredIcms").value) || 0) / 100;
+        const pCredPisCof = (parseFloat(document.getElementById("pCredPisCof").value) || 0) / 100;
 
-    function getPayload() {
-        const params = JSON.parse(localStorage.getItem('truckvan_params')) || { fator:2.0, iss:5, pis:1.65, cofins:7.6, ir:34, adm:4, fin:1.3, comissao:3 };
+        // Read Labor Hours & Hourly Rates
+        const hEng = parseFloat(document.getElementById("hEng").value) || 0;
+        const tEng = parseFloat(document.getElementById("tEng").value) || 0;
+        const hCald = parseFloat(document.getElementById("hCald").value) || 0;
+        const tCald = parseFloat(document.getElementById("tCald").value) || 0;
+        const hMont = parseFloat(document.getElementById("hMont").value) || 0;
+        const tMont = parseFloat(document.getElementById("tMont").value) || 0;
+        const hPint = parseFloat(document.getElementById("hPint").value) || 0;
+        const tPint = parseFloat(document.getElementById("tPint").value) || 0;
 
-        const itens = Array.from(document.querySelectorAll('.linha-embarcado')).map(l => ({
-            titulo: l.querySelector('.emb-titulo').value, quantidade: parseInt(l.querySelector('.emb-qtd').value)||0,
-            valorUnitario: parseFloat(l.querySelector('.emb-valor').value)||0, linkFornecedor: l.querySelector('.emb-link').value
-        })).filter(i => i.titulo);
+        const custoMod = (hEng * tEng) + (hCald * tCald) + (hMont * tMont) + (hPint * tPint);
 
-        return {
-            nomeCliente: document.getElementById('nomeCliente').value || "Cliente",
-            nomeProjeto: document.getElementById('nomeProjeto').value || "Projeto",
-            diasProducao: parseInt(document.getElementById('diasProducao').value) || 15,
-            tipoProduto: document.getElementById('tipoProduto').value,
-            horasEngenharia: parseInt(document.getElementById('hrEng').value)||0, horasCaldeiraria: parseInt(document.getElementById('hrCaldeiraria').value)||0,
-            horasMontagem: parseInt(document.getElementById('hrMontagem').value)||0, horasPintura: parseInt(document.getElementById('hrPintura').value)||0,
-            fatorVenda: parseFloat(params.fator), percIss: parseFloat(params.iss), percPis: parseFloat(params.pis), percCofins: parseFloat(params.cofins),
-            percIr: parseFloat(params.ir), percDespAdm: parseFloat(params.adm), percDespFin: parseFloat(params.fin), percComissao: parseFloat(params.comissao),
-            itensEmbarcados: itens, idsCaracteristicasGgf: Array.from(document.querySelectorAll('.chk-ggf:checked')).map(c => parseInt(c.value))
-        };
-    }
-
-    async function simularOrcamento() {
-        try {
-            const res = await fetch('/api/orcamentos/simular', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(getPayload()) });
-            if (res.ok) {
-                const dre = await res.json();
-                document.getElementById('dashCusto').innerText = formatarMoeda(dre.custoTotal);
-                document.getElementById('dashVenda').innerText = formatarMoeda(dre.cenarioMedio.rob);
-
-                const cMax = dre.cenarioMaximo; const cMed = dre.cenarioMedio; const cMin = dre.cenarioMinimo;
-                const htmlDre = `
-                        <tr><td>(+) ROB (Receita Venda)</td><td><b>${formatarMoeda(cMax.rob)}</b></td><td><b>${formatarMoeda(cMed.rob)}</b></td><td><b>${formatarMoeda(cMin.rob)}</b></td></tr>
-                        <tr class="text-danger"><td>(-) Impostos Faturados</td><td>${formatarMoeda(cMax.impostosTotais)}</td><td>${formatarMoeda(cMed.impostosTotais)}</td><td>${formatarMoeda(cMin.impostosTotais)}</td></tr>
-                        <tr class="tr-subtotal"><td>(=) ROL (Receita Líq)</td><td>${formatarMoeda(cMax.rol)}</td><td>${formatarMoeda(cMed.rol)}</td><td>${formatarMoeda(cMin.rol)}</td></tr>
-                        <tr class="text-danger"><td>(-) Mão de Obra</td><td>${formatarMoeda(cMax.custoEstrutural)}</td><td>${formatarMoeda(cMed.custoEstrutural)}</td><td>${formatarMoeda(cMin.custoEstrutural)}</td></tr>
-                        <tr class="text-danger"><td>(-) Itens Embarcados</td><td>${formatarMoeda(cMax.custoEmbarcados)}</td><td>${formatarMoeda(cMed.custoEmbarcados)}</td><td>${formatarMoeda(cMin.custoEmbarcados)}</td></tr>
-                        <tr class="text-danger"><td>(-) GGF Integrado</td><td>${formatarMoeda(cMax.ggfAdicional)}</td><td>${formatarMoeda(cMed.ggfAdicional)}</td><td>${formatarMoeda(cMin.ggfAdicional)}</td></tr>
-                        <tr class="tr-subtotal"><td>(=) Resultado Bruto</td><td>${formatarMoeda(cMax.resultadoBruto)}</td><td>${formatarMoeda(cMed.resultadoBruto)}</td><td>${formatarMoeda(cMin.resultadoBruto)}</td></tr>
-                        <tr class="text-danger"><td>(-) Taxas Adm / Fin</td><td>${formatarMoeda(cMax.despAdm + cMax.despFin)}</td><td>${formatarMoeda(cMed.despAdm + cMed.despFin)}</td><td>${formatarMoeda(cMin.despAdm + cMin.despFin)}</td></tr>
-                        <tr class="text-danger"><td>(-) IR e CSLL</td><td>${formatarMoeda(cMax.ir)}</td><td>${formatarMoeda(cMed.ir)}</td><td>${formatarMoeda(cMin.ir)}</td></tr>
-                        <tr class="tr-total"><td>LUCRO LÍQUIDO FINAL</td><td>${formatarMoeda(cMax.lucroLiquido)}</td><td>${formatarMoeda(cMed.lucroLiquido)}</td><td>${formatarMoeda(cMin.lucroLiquido)}</td></tr>
-                        <tr><td><b>MARGEM OPERACIONAL</b></td><td><b>${cMax.margemPercentual.toFixed(2)}%</b></td><td><b>${cMed.margemPercentual.toFixed(2)}%</b></td><td><b>${cMin.margemPercentual.toFixed(2)}%</b></td></tr>
-                    `;
-                document.getElementById('corpoTabelaDre').innerHTML = htmlDre;
-            }
-        } catch (e) {}
-    }
-
-    async function salvarOrcamento() {
-        try {
-            const res = await fetch('/api/orcamentos/salvar', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(getPayload()) });
-            if(res.ok) { showMsg('Proposta Salva!'); carregarHistorico(); } else { showMsg('Erro', true); }
-        } catch (e) { showMsg('Sem conexão', true); }
-    }
-
-    async function carregarHistorico() {
-        try {
-            const res = await fetch('/api/orcamentos/listar');
-            const dados = await res.json();
-            const tbody = document.getElementById('tabelaHistoricoBody');
-            tbody.innerHTML = '';
-            dados.forEach(o => {
-                tbody.innerHTML += `<tr><td>#${o.id}</td><td>${o.nomeCliente}</td><td>${o.nomeProjeto}</td><td>${o.tipoProduto}</td>
-                    <td>${formatarMoeda(o.valorTotalCusto)}</td><td><b>${formatarMoeda(o.valorTotalVenda)}</b></td>
-                    <td><button class="btn btn-primary" onclick="showMsg('Carregar funcionalidade em breve.')">Ler</button></td></tr>`;
-            });
-        } catch (e) { document.getElementById('tabelaHistoricoBody').innerHTML = '<tr><td colspan="7">Erro ao ler.</td></tr>'; }
-    }
-
-    function gerarPDF() {
-        document.getElementById('pdfCliente').innerText = document.getElementById('nomeCliente').value || "Não informado";
-        document.getElementById('pdfProjeto').innerText = document.getElementById('nomeProjeto').value || "Não informado";
-        document.getElementById('pdfData').innerText = new Date().toLocaleDateString('pt-BR');
-
-        // Clona o header do DRE e o corpo (já renderizado) para o container PDF
-        document.getElementById('tabelaPdfPrint').innerHTML =
-            `<thead>${document.querySelector('.table-dre thead').innerHTML}</thead>` +
-            `<tbody>${document.getElementById('corpoTabelaDre').innerHTML}</tbody>`;
-
-        const element = document.getElementById('pdfContainer');
-        element.style.display = 'block'; // Mostra temporariamente
-
-        html2pdf().set({
-            margin: 15, filename: `DRE_Truckvan_${document.getElementById('nomeCliente').value}.pdf`,
-            image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
-        }).from(element).save().then(() => {
-            element.style.display = 'none'; // Esconde de novo
+        // Read Materials
+        let custoMateriais = 0;
+        const linhas = document.querySelectorAll("#tabelaInsumos tr");
+        linhas.forEach(linha => {
+            const qtd = parseFloat(linha.querySelector(".item-qtd").value) || 0;
+            const preco = parseFloat(linha.querySelector(".item-preco").value) || 0;
+            const fator = parseFloat(linha.querySelector(".item-fator").value) || 1;
+            const subtotal = qtd * preco * fator;
+            custoMateriais += subtotal;
+            linha.querySelector(".item-subtotal").innerText = formatarMoeda(subtotal);
         });
+
+        // Calculate DRE Steps
+        const creditos = custoMateriais * (pCredIcms + pCredPisCof);
+        const custoDiretoTotal = custoMateriais + custoMod;
+        const custoDiretoLiquido = custoDiretoTotal - creditos;
+        const valorGgf = custoDiretoTotal * pGgf;
+        const custoIndustrialTotal = custoDiretoLiquido + valorGgf;
+
+        // Formação de Preço por Dentro (Markup Divisor)
+        const somaAliquotas = pIcms + pPis + pCofins + pComissao + pMargem;
+        const divisor = 1 - somaAliquotas;
+
+        let precoVendaBruto = 0;
+        if (divisor > 0) {
+            precoVendaBruto = custoIndustrialTotal / divisor;
+        }
+
+        const valorImpostos = precoVendaBruto * (pIcms + pPis + pCofins);
+        const valorComissao = precoVendaBruto * pComissao;
+        const valorLucro = precoVendaBruto * pMargem;
+
+        // Update DOM Elements
+        document.getElementById("dreMateriais").innerText = formatarMoeda(custoMateriais);
+        document.getElementById("dreMod").innerText = formatarMoeda(custoMod);
+        document.getElementById("dreCreditos").innerText = formatarMoeda(creditos);
+        document.getElementById("dreCustoLiquido").innerText = formatarMoeda(custoDiretoLiquido);
+        document.getElementById("dreGgf").innerText = formatarMoeda(valorGgf);
+        document.getElementById("dreCustoIndustrial").innerText = formatarMoeda(custoIndustrialTotal);
+        document.getElementById("dreImpostos").innerText = formatarMoeda(valorImpostos);
+        document.getElementById("dreComissao").innerText = formatarMoeda(valorComissao);
+        document.getElementById("dreLucro").innerText = formatarMoeda(valorLucro);
+        document.getElementById("drePrecoVenda").innerText = formatarMoeda(precoVendaBruto);
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        carregarParametrosLocais();
-        carregarCaracteristicasGgf();
-        adicionarItemEmbarcado();
-    });
+    function formatarMoeda(v) {
+        return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v || 0);
+    }
 </script>
 </body>
 </html>

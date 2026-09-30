@@ -1,12 +1,18 @@
 package com.example.planejamento_custo.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import java.math.BigDecimal;
+import lombok.*;
 
-@Data // Se estiver usando Lombok (gera getters e setters). Se não, crie-os manualmente.
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 @Entity
-@Table(name = "insumo")
+@Table(name = "tb_insumo")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder // Resolve o erro 'Cannot resolve method builder'
 public class Insumo {
 
     @Id
@@ -14,18 +20,17 @@ public class Insumo {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String codigoSku;
+    private String codigoInsumo;
 
-    @Column(nullable = false)
-    private String descricao;
+    private String nome;
 
-    @Column(nullable = false)
+    private BigDecimal precoBase;
+
     private String unidadeMedida;
 
-    @Column(nullable = false, precision = 12, scale = 4)
-    private BigDecimal custoAtual;
+    private BigDecimal fatorConversao;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private TipoInsumo tipo;
+    private String fornecedor;
+
+    private LocalDateTime dataAtualizacao;
 }

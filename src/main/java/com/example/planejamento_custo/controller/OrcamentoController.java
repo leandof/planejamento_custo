@@ -1,38 +1,24 @@
 package com.example.planejamento_custo.controller;
 
-import com.example.planejamento_custo.dto.DreResponseDTO;
 import com.example.planejamento_custo.dto.OrcamentoRequestDTO;
 import com.example.planejamento_custo.entity.Orcamento;
-import com.example.planejamento_custo.repository.OrcamentoRepository;
 import com.example.planejamento_custo.service.OrcamentoService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/orcamentos")
-@CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class OrcamentoController {
 
-    @Autowired
-    private OrcamentoService orcamentoService;
+    private final OrcamentoService orcamentoService;
 
-    @Autowired
-    private OrcamentoRepository orcamentoRepository;
-
-    @PostMapping("/simular")
-    public DreResponseDTO simular(@RequestBody OrcamentoRequestDTO request) {
-        return orcamentoService.simularOrcamento(request);
-    }
-
-    @PostMapping("/salvar")
-    public Orcamento salvar(@RequestBody OrcamentoRequestDTO request) {
-        return orcamentoService.salvarOrcamento(request);
-    }
-
-    @GetMapping("/listar")
-    public List<Orcamento> listar() {
-        return orcamentoRepository.findAll();
+    @PostMapping
+    public ResponseEntity<Orcamento> criar(@RequestBody @Valid OrcamentoRequestDTO dto) {
+        Orcamento orcamento = orcamentoService.criarEProcessar(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(orcamento);
     }
 }
